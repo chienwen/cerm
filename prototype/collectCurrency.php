@@ -16,8 +16,11 @@
                     $dict[$curr]['name'] = $pf['name'];
                 }
                 else{
-                    if(strlen($dict[$curr]['name']) < $pf['name']){
-                        $dict[$curr]['name'] = $pf['name'];
+                    //if(strlen($dict[$curr]['name']) < $pf['name']){
+                    //    $dict[$curr]['name'] = $pf['name'];
+                    //}
+                    if($dict[$curr]['name'] != $pf['name']){
+                        $dict[$curr]['name'] .= ' / '.$pf['name'];
                     }
                 }
             }
