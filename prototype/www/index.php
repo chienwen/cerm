@@ -1,9 +1,43 @@
-<!DOCTYPE html>
+<?php
+
+$t_init = time();
+date_default_timezone_set('Asia/Taipei');
+define('DATA_PATH', '../data/');
+
+$currencyDict = json_decode(file_get_contents(DATA_PATH.'currency.json'),true);
+
+
+if(empty($_GET['days'])) $showDays = 30;
+else $showDays = $_GET['days'];
+if($showDays > 100) $showDays = 100;
+if(empty($_GET['from'])) $currFrom = 'USD';
+else $currFrom = strtoupper($_GET['from']);
+if(empty($_GET['to'])) $currTo = 'TWD';
+else $currTo = strtoupper($_GET['to']);
+
+
+?><!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 <body>
+
+<form method="get">
+    <div style="margin-bottom: 20px;">
+        1 <select name="from"><?php
+            foreach($currencyDict as $curr => $pf){
+                echo '<option value="'.$curr.'" '.($curr === $currFrom ? 'selected' : '').'>'.$curr.(empty($pf['name']) ? '' : ' - '.$pf['name']).'</option>';
+            }
+        ?></select> = ? <select name="to"><?php
+            foreach($currencyDict as $curr => $pf){
+                echo '<option value="'.$curr.'" '.($curr === $currTo ? 'selected' : '').'>'.$curr.(empty($pf['name']) ? '' : ' - '.$pf['name']).'</option>';
+            }
+        ?></select><br />
+        <input type="text" size="3" name="days" value="<?php echo $showDays;?>" /> days
+        <input type="submit" value="GO" />
+    </div>
+</form>
 
 <canvas id="myChart" width="800" height="600"></canvas>
 
@@ -13,9 +47,7 @@ var ctx = document.getElementById("myChart").getContext("2d");
 
 <?php
 
-$t_init = time();
-date_default_timezone_set('Asia/Taipei');
-define('DATA_PATH', '../data/');
+echo "/*\n";
 
 $t_start = false;
 
@@ -29,17 +61,11 @@ for($t=$t_init; $t>$t_init - 86400*14; $t-=86400){
 
 $labels = array();
 
-if(empty($_GET['days'])) $showDays = 20;
-else $showDays = $_GET['days'];
-
 for($t=$t_start; $t>= $t_start-86400 * $showDays; $t-=86400){
     $labels[] = date('Ymd',$t);
 }
 
 $labels = array_reverse($labels);
-
-$currFrom = $_GET['from'];
-$currTo = $_GET['to'];
 
 $minMaxValues = array();
 
@@ -64,6 +90,10 @@ function getDataset($org, $conf){
             $data[] = null;
             continue;
         }
+        if(getUSDBase($extable,$currFrom,'buy') == 0){
+            $data[] = null;
+            continue;
+        }
         //$val = (empty($extable[$currTo]['sell']) ? $extable[$currTo]['mid']: $extable[$currTo]['sell']) / (empty($extable[$currFrom]['buy']) ? $extable[$currFrom]['mid']: $extable[$currFrom]['buy']);
         $val = getUSDBase($extable,$currTo,'sell') / getUSDBase($extable,$currFrom,'buy');
         $val = round($val, 4);
@@ -73,11 +103,17 @@ function getDataset($org, $conf){
     $conf['data'] = $data;
     return $conf;
 }
+function checkDataset($dataset){
+    foreach($dataset['data'] as $item){
+        if(!empty($item)) return true;
+    }
+    return false;
+}
 
 $datasets = array();
 
 $color = '30,255,0';
-$datasets[] = getDataset('jcb', array(
+$dataset = getDataset('jcb', array(
             'label' => 'JCB',
             'fillColor' => "rgba({$color},0.1)",
             'strokeColor' => "rgba({$color},1)",
@@ -85,9 +121,12 @@ $datasets[] = getDataset('jcb', array(
             'pointStrokeColor' => "#fff",
             'pointHighlightFill' => "#fff",
             'pointHighlightStroke' => "rgba({$color},1)",
-            ));  
+            )); 
+if(checkDataset($dataset)){
+    $datasets[] = $dataset;
+}
 $color = '255,0,25';
-$datasets[] = getDataset('mc', array(
+$dataset = getDataset('mc', array(
             'label' => 'MasterCard',
             'fillColor' => "rgba({$color},0.1)",
             'strokeColor' => "rgba({$color},1)",
@@ -96,8 +135,11 @@ $datasets[] = getDataset('mc', array(
             'pointHighlightFill' => "#fff",
             'pointHighlightStroke' => "rgba({$color},1)",
             ));   
+if(checkDataset($dataset)){
+    $datasets[] = $dataset;
+}
 $color = '0,0,255';
-$datasets[] = getDataset('visa', array(
+$dataset = getDataset('visa', array(
             'label' => 'VISA',
             'fillColor' => "rgba({$color},0.1)",
             'strokeColor' => "rgba({$color},1)",
@@ -106,6 +148,9 @@ $datasets[] = getDataset('visa', array(
             'pointHighlightFill' => "#fff",
             'pointHighlightStroke' => "rgba({$color},1)",
             ));   
+if(checkDataset($dataset)){
+    $datasets[] = $dataset;
+}
 
 $data = array(
             'labels' => $labels,
@@ -113,6 +158,7 @@ $data = array(
         );
 
 //print_r($data);
+echo "*/\n";
 
 ?>
 
@@ -146,11 +192,19 @@ var data_sample = {
 };
 */
 
+<?php
+
+    $step = (max($minMaxValues)-min($minMaxValues)) / 10;
+    $step = round($step,2);
+    if($step == 0) $step = 0.001;
+
+?>
+
 var myNewChart = new Chart(ctx).Line(data, {
             bezierCurve: false,
             scaleOverride : true,
-            scaleSteps : <?php echo ceil((max($minMaxValues)-min($minMaxValues))/0.01);?>,
-            scaleStepWidth : 0.01,
+            scaleSteps : <?php echo ceil((max($minMaxValues)-min($minMaxValues))/$step);?>,
+            scaleStepWidth : <?php echo $step;?>,
             scaleStartValue : <?php echo min($minMaxValues);?>,
             multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>" 
 });
