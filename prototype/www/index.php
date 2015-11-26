@@ -215,6 +215,9 @@ var myNewChart = new Chart(ctx).Line(data, {
             scaleSteps : <?php echo ceil((max($minMaxValues)-min($minMaxValues))/$step);?>,
             scaleStepWidth : <?php echo $step;?>,
             scaleStartValue : <?php echo min($minMaxValues);?>,
+            scaleLabel: function(object) {
+                return "     " + object.value;
+            },
             multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>" 
 });
 
