@@ -3,6 +3,9 @@
 $t_init = time();
 date_default_timezone_set('Asia/Taipei');
 define('DATA_PATH', '../data/');
+define('COLOR_JCB', '30,255,0');
+define('COLOR_MC', '255,0,25');
+define('COLOR_VISA', '0,0,255');
 
 $currencyDict = json_decode(file_get_contents(DATA_PATH.'currency.json'),true);
 
@@ -40,6 +43,12 @@ else $currTo = strtoupper($_GET['to']);
 </form>
 
 <canvas id="myChart" width="800" height="600"></canvas>
+
+<div>
+    <span style="display:inline-block;width:30px;height:14px;background-color: rgb(<?php echo COLOR_VISA;?>)"></span>VISA
+    <span style="display:inline-block;width:30px;height:14px;background-color: rgb(<?php echo COLOR_MC;?>)"></span>MasterCard
+    <span style="display:inline-block;width:30px;height:14px;background-color: rgb(<?php echo COLOR_JCB;?>)"></span>JCB
+</div>
 
 <script src="Chart.min.js"></script>
 <script>
@@ -112,7 +121,7 @@ function checkDataset($dataset){
 
 $datasets = array();
 
-$color = '30,255,0';
+$color = COLOR_JCB;
 $dataset = getDataset('jcb', array(
             'label' => 'JCB',
             'fillColor' => "rgba({$color},0.1)",
@@ -125,7 +134,7 @@ $dataset = getDataset('jcb', array(
 if(checkDataset($dataset)){
     $datasets[] = $dataset;
 }
-$color = '255,0,25';
+$color = COLOR_MC;
 $dataset = getDataset('mc', array(
             'label' => 'MasterCard',
             'fillColor' => "rgba({$color},0.1)",
@@ -138,7 +147,7 @@ $dataset = getDataset('mc', array(
 if(checkDataset($dataset)){
     $datasets[] = $dataset;
 }
-$color = '0,0,255';
+$color = COLOR_VISA;
 $dataset = getDataset('visa', array(
             'label' => 'VISA',
             'fillColor' => "rgba({$color},0.1)",

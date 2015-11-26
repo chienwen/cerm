@@ -134,7 +134,7 @@
                 $rate = false;
                 foreach(explode("\n",$data) as $line){
                     if(preg_match('/<strong>1 USD = (.+) '.$curr.'<strong>/',$line,$regs)){
-                        $rate = $regs[1]/1;
+                        $rate = str_replace(',','',trim($regs[1]))/1;
                         break;
                     }
                 }
