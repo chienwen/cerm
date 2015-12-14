@@ -10,6 +10,8 @@
 
     session_start();
 
+    $currencyDict = json_decode(file_get_contents('../../prototype/data/currency.json'),true);
+
     function requireLogin($done, $error = false){
         global $_SESSION;
         if(!isset($_SESSION['login'])){
