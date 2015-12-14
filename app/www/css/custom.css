@@ -1,7 +1,7 @@
 ul.cardlist {
     padding-left: 0;
 }
-.cardlist li {
+.mycards .cardlist li {
     list-style-type: none;
 }
 .cardlist .ccard {
@@ -13,6 +13,14 @@ ul.cardlist {
 
 .d-ib {
     display: inline-block;
+}
+
+.fl-r {
+    float: right;
+}
+
+.payment .loading {
+    margin-top: 20px;
 }
 
 .cardLogo {

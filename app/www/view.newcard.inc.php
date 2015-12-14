@@ -28,6 +28,14 @@
                                 </label>
                             </div>
                         </div>
+                        <div>
+                            <label>Base Currency</label>
+                            <select class="form-group" name="from"><?php
+                                foreach($currencyDict as $curr => $pf){
+                                    echo '<option value="'.$curr.'" '.($curr === '' ? 'selected' : '').'>'.$curr.(empty($pf['name']) ? '' : ' - '.$pf['name']).'</option>';
+                                }
+                            ?></select>
+                        </div>
                         <div class="form-group">
                             <label>Foreign Transaction Fee</label>
                             <input type="text" class="form-control" name="ftfee" placeholder="0.015">
