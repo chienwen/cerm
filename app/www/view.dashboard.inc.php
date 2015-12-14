@@ -6,7 +6,14 @@
                     <h2 class="section-heading">Real-time Exchange Rates</h2>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <p><pre><?php print_r($_SESSION['login']);?></pre></p>
+                    <?php /* <p><pre><?php print_r($_SESSION['login']);?></pre></p> */ ?>
+                    <form>
+                        <select class="form-group" name="from"><?php
+                            foreach($currencyDict as $curr => $pf){
+                                echo '<option value="'.$curr.'" '.($curr === '' ? 'selected' : '').'>'.$curr.(empty($pf['name']) ? '' : ' - '.$pf['name']).'</option>';
+                            }
+                        ?></select>
+                    </form>
                 </div>
             </div>
             <div class="row">

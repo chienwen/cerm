@@ -18,6 +18,10 @@ else $currFrom = strtoupper($_GET['from']);
 if(empty($_GET['to'])) $currTo = 'TWD';
 else $currTo = strtoupper($_GET['to']);
 
+    if(isset($_GET['w']) && preg_match('/^\d+%?$/', $_GET['w'])) $c_w = $_GET['w'];
+    else $c_w = '800';
+    if(isset($_GET['h']) && preg_match('/^\d+%?$/', $_GET['h'])) $c_h = $_GET['h'];
+    else $c_h = '600';
 
 ?><!DOCTYPE html>
 <html>
@@ -40,14 +44,14 @@ else $currTo = strtoupper($_GET['to']);
         <input type="text" size="3" name="days" value="<?php echo $showDays;?>" /> days
         <input type="submit" value="GO" />
     </div>
+    <input type="hidden" name="h" value="<?php echo $c_h;?>">
+    <input type="hidden" name="w" value="<?php echo $c_w;?>">
 </form>
 
 <canvas id="myChart" width="<?php
-    if(isset($_GET['w']) && preg_match('/^\d+%?$/', $_GET['w'])) echo $_GET['w'];
-    else echo '800';
+    echo $c_w;
 ?>" height="<?php
-    if(isset($_GET['h']) && preg_match('/^\d+%?$/', $_GET['h'])) echo $_GET['h'];
-    else echo '600';
+    echo $c_h;
 ?>"></canvas>
 
 <div>
