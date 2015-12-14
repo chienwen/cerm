@@ -9,7 +9,7 @@ function curlFetch($url, $postData=false, $referer=false, $headers=false){
 	$ch = curl_init();
 	if($postData!==false){ 
 		curl_setopt($ch, CURLOPT_POST,1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,preparePostFields($postData)); 
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData)); 
 	}
 	if($referer===false){
 		$referer = "http://www.yahoo.com/";

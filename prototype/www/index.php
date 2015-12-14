@@ -42,7 +42,13 @@ else $currTo = strtoupper($_GET['to']);
     </div>
 </form>
 
-<canvas id="myChart" width="800" height="600"></canvas>
+<canvas id="myChart" width="<?php
+    if(isset($_GET['w']) && preg_match('/^\d+%?$/', $_GET['w'])) echo $_GET['w'];
+    else echo '800';
+?>" height="<?php
+    if(isset($_GET['h']) && preg_match('/^\d+%?$/', $_GET['h'])) echo $_GET['h'];
+    else echo '600';
+?>"></canvas>
 
 <div>
     <span style="display:inline-block;width:30px;height:14px;background-color: rgb(<?php echo COLOR_VISA;?>)"></span>VISA
