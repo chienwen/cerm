@@ -143,10 +143,6 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-1 d-ib"><i class="fa fa-money"></i> 1,522 TWD</div>
-                                    <div class="col-md-1 d-ib"><a href="javascript:$('#sug4').removeClass('hidden');" class="detailClk"><i class="fa fa-info"></i> details</a></div>
-                                </div>
                             </div>
                         </li>
                         <li>
